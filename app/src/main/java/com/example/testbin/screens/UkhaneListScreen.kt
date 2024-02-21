@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.testbin.R
 import com.example.testbin.model.Ukhane
 import com.example.testbin.viewmodel.UkhaneListViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun UkhaneListScreen( category : String, onListItemClick: (category : Int) -> Unit) {
@@ -67,6 +69,7 @@ fun UkhaneListScreen( category : String, onListItemClick: (category : Int) -> Un
         ) {
             LazyColumn {
                 items(ukhaneListData.value) { item ->
+                   // https://semicolonspace.com/jetpack-compose-lazycolumn/
                     ukhaneItemForList(ukhaneType = item,onListItemClick)
                 }
 
@@ -74,10 +77,13 @@ fun UkhaneListScreen( category : String, onListItemClick: (category : Int) -> Un
         }
     }
 
+
+
 }
 @Composable
 fun ukhaneItemForList(ukhaneType: Ukhane, onListItemClick: (category: Int) -> Unit,){
 
+    val ukhaneListViewModel : UkhaneListViewModel= hiltViewModel()
     Column {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -85,6 +91,7 @@ fun ukhaneItemForList(ukhaneType: Ukhane, onListItemClick: (category: Int) -> Un
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
+                    ukhaneListViewModel.curUkhanaId = ukhaneType.id
                     onListItemClick(ukhaneType.id)
                 }
         ) {

@@ -5,10 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -28,7 +25,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun UkhanaScreen(ukhanaId : Int){
     val coroutineScope = rememberCoroutineScope()
+    
     val ukhaneListViewModel : UkhaneListViewModel = hiltViewModel()
+    LaunchedEffect(Unit, block = {
+        ukhaneListViewModel.getUkhanaById(ukhanaId)
+    })
+
+    val ukhanaData : State<Ukhane?> = ukhaneListViewModel.ukhanaToDisplay.collectAsState()
     Column {
         Box(
             modifier = Modifier
@@ -43,16 +46,17 @@ fun UkhanaScreen(ukhanaId : Int){
             contentAlignment = Alignment.Center
         ) {
 
-            if(ukhaneListViewModel._ukhana != null){
-                val ukhanaData : State<Ukhane> = ukhaneListViewModel._ukhana.collectAsState()
+            ukhaneListViewModel.ukhanaToDisplay.let {
+
                 Text(
-                    text = ukhanaData.value.ukhana,
+                    text = ukhanaData.value?.ukhana ?: "AAAAAAA",
                     fontSize = 18.sp,
                     color = Color.Black,
                     modifier = Modifier.padding(0.dp, 20.dp),
                     style = MaterialTheme.typography.body1
                 )
             }
+
 
         }
 
@@ -65,7 +69,7 @@ fun UkhanaScreen(ukhanaId : Int){
                     .padding(0.dp, 20.dp)
                     .clickable {
                         coroutineScope.launch {
-                            ukhaneListViewModel.getPreviousUkhana(2)
+                            ukhaneListViewModel.getPreviousUkhana(ukhaneListViewModel.curUkhanaId)
                         }
 
                     },
@@ -80,7 +84,7 @@ fun UkhanaScreen(ukhanaId : Int){
                     .padding(0.dp, 20.dp)
                     .clickable {
                         coroutineScope.launch {
-                            ukhaneListViewModel.getNextUkhana(2)
+                            ukhaneListViewModel.getNextUkhana(ukhaneListViewModel.curUkhanaId)
                         }
 
                     },

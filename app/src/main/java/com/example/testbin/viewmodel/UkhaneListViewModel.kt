@@ -1,5 +1,6 @@
 package com.example.testbin.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,14 +21,17 @@ private val savedStateHandle: SavedStateHandle) : ViewModel(){
     val UkhaneList : StateFlow<List<Ukhane>>
     get() = ukhaneRepository.UkhaneList
 
-    lateinit var _ukhana : MutableStateFlow<Ukhane>
-    val ukhanaToDisplay : StateFlow <Ukhane>
+
+    val _ukhana = MutableStateFlow<Ukhane?>(null)
+    val ukhanaToDisplay : StateFlow <Ukhane?>
         get() = _ukhana
 
+    var curUkhanaId = 0
     init {
         viewModelScope.launch {
-
             ukhaneRepository.getUkhaneByType()
+            //getUkhanaById(curUkhanaId)
+           // _ukhana.value = UkhaneList.value.get(0)
            // var aa = getUkhanaById(1)
            // _ukhana.emit(aa)
         }
@@ -47,19 +51,31 @@ private val savedStateHandle: SavedStateHandle) : ViewModel(){
 
     suspend fun getNextUkhana(id : Int) : Ukhane{
         var mId = id
-        if(mId-1 == UkhaneList.value.size){
+        if(mId == UkhaneList.value.size-1){
             mId = 0
         }else{
             mId++
         }
         var mData = UkhaneList.value.get(mId)
-        _ukhana.emit(mData)
+        Log.e(">>>","Ukhana>>>>"+mData.ukhana)
+        Log.e(">>>","Ukhana id>>>>"+mData.id)
+        _ukhana.value = mData
+        curUkhanaId = mId
         return mData;
     }
 
     suspend fun getPreviousUkhana(id : Int) : Ukhane{
-        var mData = UkhaneList.value.get(id+1)
-        _ukhana.emit(mData)
+        var mId = id
+        if(mId==0){
+            mId = UkhaneList.value.size-1
+        }else{
+            mId--
+        }
+        var mData = UkhaneList.value.get(mId)
+        Log.e(">>>","Ukhana>>>>"+mData.ukhana)
+        Log.e(">>>","Ukhana id>>>>"+mData.id)
+        _ukhana.value = mData
+        curUkhanaId = mId
         return mData;
     }
 }
