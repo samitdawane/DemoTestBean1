@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -68,9 +69,13 @@ fun UkhaneListScreen( category : String, onListItemClick: (category : Int) -> Un
                 .border(2.dp, Color.Black,),
         ) {
             LazyColumn {
-                items(ukhaneListData.value) { item ->
+                /*items(ukhaneListData.value) { item ->
                    // https://semicolonspace.com/jetpack-compose-lazycolumn/
                     ukhaneItemForList(ukhaneType = item,onListItemClick)
+                }*/
+
+                itemsIndexed(items = ukhaneListData.value) { index, item ->
+                    ukhaneItemForList(ukhaneType = item,index,onListItemClick)
                 }
 
             }
@@ -81,7 +86,7 @@ fun UkhaneListScreen( category : String, onListItemClick: (category : Int) -> Un
 
 }
 @Composable
-fun ukhaneItemForList(ukhaneType: Ukhane, onListItemClick: (category: Int) -> Unit,){
+fun ukhaneItemForList(ukhaneType: Ukhane, index : Int ,onListItemClick: (category: Int) -> Unit,){
 
     val ukhaneListViewModel : UkhaneListViewModel= hiltViewModel()
     Column {
