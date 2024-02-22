@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun UkhaneListScreen( category : String, onListItemClick: (category : Int) -> Unit) {
     val ukhaneListViewModel : UkhaneListViewModel= hiltViewModel()
+
     val ukhaneListData : State<List<Ukhane>> = ukhaneListViewModel.UkhaneList.collectAsState()
     Column {
 
@@ -87,8 +85,6 @@ fun UkhaneListScreen( category : String, onListItemClick: (category : Int) -> Un
 }
 @Composable
 fun ukhaneItemForList(ukhaneType: Ukhane, index : Int ,onListItemClick: (category: Int) -> Unit,){
-
-    val ukhaneListViewModel : UkhaneListViewModel= hiltViewModel()
     Column {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -96,12 +92,10 @@ fun ukhaneItemForList(ukhaneType: Ukhane, index : Int ,onListItemClick: (categor
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    ukhaneListViewModel.curUkhanaId = ukhaneType.id
-                    onListItemClick(ukhaneType.id)
+                    onListItemClick(index)
                 }
         ) {
             Image(painter = painterResource(id = R.mipmap.ic_cam), contentDescription = "img")
-
             Text(
                 text = ukhaneType.ukhana,
                 fontSize = 18.sp,

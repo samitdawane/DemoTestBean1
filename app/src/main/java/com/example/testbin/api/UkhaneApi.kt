@@ -14,6 +14,8 @@ interface UkhaneApi {
     suspend fun getUkhaneTypes() : Response<List<String>>
 
     @GET("/v3/b/657aae26266cfc3fde68a131?meta=false")
-    suspend fun getUkhaneByType() :  Response<UkhaneResponse>
+    suspend fun getUkhaneByType(@Header("X-JSON-Path") type: String) :  Response<List<Ukhane>>
+
+
 
 }

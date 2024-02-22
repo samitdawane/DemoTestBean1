@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 import com.example.testbin.R
 import com.example.testbin.model.Ukhane
+import com.example.testbin.viewmodel.UkhanaViewModel
 import com.example.testbin.viewmodel.UkhaneListViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -25,13 +26,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun UkhanaScreen(ukhanaId : Int){
     val coroutineScope = rememberCoroutineScope()
-    
-    val ukhaneListViewModel : UkhaneListViewModel = hiltViewModel()
-    LaunchedEffect(Unit, block = {
-        ukhaneListViewModel.getUkhanaById(ukhanaId)
-    })
+    val ukhaneViewModel : UkhanaViewModel = hiltViewModel()
+    val ukhanaData : State<Ukhane?> = ukhaneViewModel.ukhanaToDisplay.collectAsState()
 
-    val ukhanaData : State<Ukhane?> = ukhaneListViewModel.ukhanaToDisplay.collectAsState()
     Column {
         Box(
             modifier = Modifier
@@ -46,7 +43,7 @@ fun UkhanaScreen(ukhanaId : Int){
             contentAlignment = Alignment.Center
         ) {
 
-            ukhaneListViewModel.ukhanaToDisplay.let {
+            ukhaneViewModel.ukhanaToDisplay.let {
 
                 Text(
                     text = ukhanaData.value?.ukhana ?: "AAAAAAA",
@@ -69,7 +66,7 @@ fun UkhanaScreen(ukhanaId : Int){
                     .padding(0.dp, 20.dp)
                     .clickable {
                         coroutineScope.launch {
-                            ukhaneListViewModel.getPreviousUkhana(ukhaneListViewModel.curUkhanaId)
+                            ukhaneViewModel.getPreviousUkhana(ukhaneViewModel.curUkhanaId)
                         }
 
                     },
@@ -84,7 +81,7 @@ fun UkhanaScreen(ukhanaId : Int){
                     .padding(0.dp, 20.dp)
                     .clickable {
                         coroutineScope.launch {
-                            ukhaneListViewModel.getNextUkhana(ukhaneListViewModel.curUkhanaId)
+                            ukhaneViewModel.getNextUkhana(ukhaneViewModel.curUkhanaId)
                         }
 
                     },

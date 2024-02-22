@@ -23,10 +23,11 @@ class UkhaneRepository @Inject constructor(val ukhaneApi: UkhaneApi) {
     val UkhaneList : StateFlow<List<Ukhane>>
     get() = _UkhaneList
 
-    suspend fun getUkhaneByType(){
-        val result = ukhaneApi.getUkhaneByType()
+    suspend fun getUkhaneByType(type:String){
+
+        val result = ukhaneApi.getUkhaneByType("UkhaneList[?(@.type==\"$type\")]")
         if (result.isSuccessful && result.body()!= null){
-            _UkhaneList.emit(result.body()!!.ukhaneList)
+            _UkhaneList.emit(result.body()!!)
         }
     }
 }
